@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <div class="container" id="my_thought">
+        <div class="top_bar">
+            <h1>Welcome {{ user.first_name }} </h1>
+            <a href="/user/{{session['user_id']}}"><button>Dashboard</button></a>
+            <a href="/logout"><button>Logout</button></a>
+        </div>
+        {% with messages = get_flashed_messages(category_filter=['thought']) %}
+            {% if messages %}
+                {% for message in messages %}
+                <p> {{message}} </p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form name="my_thought_form" action="/add_thought" method="post">
+            <input id="thought_bar" type="text" name="thought" placeholder="Post a thought here">
+            <input type="submit" value="Add Thought">
+        </form>
+    </div>
+
+    {% for one_thought_with_creator in all_thoughts_with_creator %}
+    <div class="container" id="each_thought">
+        <div id="left_box">
+            <a href="/user/{{one_thought_with_creator.creator.id}}">
+                <h4> {{ one_thought_with_creator.creator.first_name }} </h4>
+            </a>
+        </div>
+        <div id="middle_box">
+            <div>
+                <p> {{ one_thought_with_creator.thought }} </p>
+            </div>
+            <div id="bottom_middle">
+                <a href="/like/{{ one_thought_with_creator.id }}"><button>Like</button></a>
+                <a href="/unlike/{{ one_thought_with_creator.id }}"><button>Un-Like</button></a>
+                <p> Likes: {{ one_thought_with_creator.likes }} </p>
+            </div>
+        </div>
+        <div id="right_box">
+            <a href="/delete/{{ one_thought_with_creator.id }}">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+    
+</body>
+</html>
